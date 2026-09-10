@@ -15,6 +15,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      issuer: 'https://github.com/login/oauth',
       authorization: { params: { scope: 'read:user user:email' } },
       //allowDangerousEmailAccountLinking: true, // 开启了 allowDangerousEmailAccountLinking: true 后，登录流程在发现没有关联的 Account 时，将直接把该 GitHub 账户链接绑定到你现有的 User 记录上，不会再产生 OAuthAccountNotLinked 报错。
     }),
