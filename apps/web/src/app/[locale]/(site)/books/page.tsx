@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
+import { getAlternates } from '@/lib/seo';
 import { getTRPCServer } from '@/lib/trpc-server';
 
 interface Book {
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: PageProps) {
   const tNav = await getTranslations({ locale, namespace: 'Navigation' });
   return {
     title: tNav('books'),
+    alternates: getAlternates('/books', locale),
   };
 }
 

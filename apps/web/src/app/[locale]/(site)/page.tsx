@@ -1,10 +1,18 @@
 import { prisma } from '@portal/db';
 import { getTranslations } from 'next-intl/server';
 import { layoutMap } from '@/components/home/layouts';
+import { getAlternates } from '@/lib/seo';
 import { getTRPCServer } from '@/lib/trpc-server';
 import siteConfig from '@/site.config';
 
 export const revalidate = 60; // revalidate at most every minute (ISR)
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return {
+    alternates: getAlternates('', locale),
+  };
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -131,6 +139,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const layoutProps = {
     locale,
+    authorName,
     authorRole,
     authorStackArr,
     developerEntries,

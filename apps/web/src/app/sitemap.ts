@@ -3,14 +3,16 @@ import type { MetadataRoute } from 'next';
 import siteConfig from '../site.config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = siteConfig.site.url;
+  const baseUrl = siteConfig.site.url.replace(/\/+$/, '');
 
-  // Static routes
+  // Complete static routes
   const staticRoutes = [
     '',
     '/about',
     '/blog',
     '/portfolio',
+    '/trending',
+    '/books',
     '/resume',
     '/gallery',
     '/guestbook',
@@ -19,6 +21,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/tools/base64',
     '/tools/json-formatter',
     '/tools/jwt-decoder',
+    '/tools/markdown-editor',
+    '/tools/qrcode',
+    '/tools/http-client',
   ];
 
   // Fetch dynamic content from database
@@ -35,55 +40,82 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   ]);
 
-  const locales = ['en', 'zh'];
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
-  // 1. Generate entries for static routes (both languages)
+  const addRoute = (
+    route: string,
+    options: {
+      lastModified?: Date;
+      changeFrequency?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+      priority?: number;
+    } = {},
+  ) => {
+    const cleanRoute =
+      route === '' || route === '/' ? '' : route.startsWith('/') ? route : `/${route}`;
+    const zhUrl = cleanRoute ? `${baseUrl}${cleanRoute}` : baseUrl;
+    const enUrl = `${baseUrl}/en${cleanRoute}`;
+
+    const alternates = {
+      languages: {
+        zh: zhUrl,
+        en: enUrl,
+        'x-default': zhUrl,
+      },
+    };
+
+    // Add entry for default (zh, without /zh prefix)
+    sitemapEntries.push({
+      url: zhUrl,
+      lastModified: options.lastModified ?? new Date(),
+      changeFrequency: options.changeFrequency ?? 'weekly',
+      priority: options.priority ?? 0.8,
+      alternates,
+    });
+
+    // Add entry for English (/en prefix)
+    sitemapEntries.push({
+      url: enUrl,
+      lastModified: options.lastModified ?? new Date(),
+      changeFrequency: options.changeFrequency ?? 'weekly',
+      priority: options.priority ?? 0.8,
+      alternates,
+    });
+  };
+
+  // 1. Static routes
   for (const route of staticRoutes) {
-    for (const locale of locales) {
-      sitemapEntries.push({
-        url: `${baseUrl}/${locale}${route}`,
-        lastModified: new Date(),
-        changeFrequency: 'weekly',
-        priority: route === '' ? 1.0 : 0.8,
-      });
-    }
+    addRoute(route, {
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: route === '' ? 1.0 : 0.8,
+    });
   }
 
-  // 2. Generate entries for blog posts (both languages)
+  // 2. Blog posts
   for (const post of posts) {
-    for (const locale of locales) {
-      sitemapEntries.push({
-        url: `${baseUrl}/${locale}/blog/${post.slug}`,
-        lastModified: post.updatedAt,
-        changeFrequency: 'monthly',
-        priority: 0.7,
-      });
-    }
+    addRoute(`/blog/${post.slug}`, {
+      lastModified: post.updatedAt,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    });
   }
 
-  // 3. Generate entries for portfolio projects (both languages)
+  // 3. Portfolio projects
   for (const project of projects) {
-    for (const locale of locales) {
-      sitemapEntries.push({
-        url: `${baseUrl}/${locale}/portfolio/${project.slug}`,
-        lastModified: project.updatedAt,
-        changeFrequency: 'monthly',
-        priority: 0.7,
-      });
-    }
+    addRoute(`/portfolio/${project.slug}`, {
+      lastModified: project.updatedAt,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    });
   }
 
-  // 4. Generate entries for books (both languages)
+  // 4. Books
   for (const book of books) {
-    for (const locale of locales) {
-      sitemapEntries.push({
-        url: `${baseUrl}/${locale}/books/${book.slug}`,
-        lastModified: book.updatedAt,
-        changeFrequency: 'monthly',
-        priority: 0.6,
-      });
-    }
+    addRoute(`/books/${book.slug}`, {
+      lastModified: book.updatedAt,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    });
   }
 
   return sitemapEntries;

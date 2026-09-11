@@ -6,6 +6,7 @@ const siteConfig = defineConfig({
     description: 'A modular personal website platform',
     url: 'https://voocii.com',
     locale: 'zh-CN',
+    author: 'Rick',
   },
   preset: 'full',
   theme: {

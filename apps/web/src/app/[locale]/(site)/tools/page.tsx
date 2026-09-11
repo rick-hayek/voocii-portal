@@ -2,12 +2,14 @@ import { FileJson, FileText, Hash, QrCode, Send, Settings2, Shield } from 'lucid
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
+import { getAlternates } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const tNav = await getTranslations({ locale, namespace: 'Navigation' });
   return {
     title: tNav('tools'),
+    alternates: getAlternates('/tools', locale),
   };
 }
 

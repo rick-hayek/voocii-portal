@@ -18,6 +18,7 @@ import type { LayoutProps } from './ClassicLayout';
 
 export function MetroLayout({
   locale,
+  authorName,
   authorRole,
   authorStackArr,
   heroTitle1,
@@ -37,7 +38,7 @@ export function MetroLayout({
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Jane Doe',
+    name: authorName || siteConfig.site.author || 'Rick',
     url: siteConfig.site.url,
     sameAs: [
       process.env.NEXT_PUBLIC_GITHUB_URL || 'https://github.com/rick-hayek',

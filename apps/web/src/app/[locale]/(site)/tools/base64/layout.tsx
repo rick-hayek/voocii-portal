@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type React from 'react';
+import { getAlternates } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -7,6 +8,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const tTools = await getTranslations({ locale, namespace: 'Tools' });
   return {
     title: `${tTools('base64.name')} | ${tNav('tools')}`,
+    alternates: getAlternates('/tools/base64', locale),
   };
 }
 

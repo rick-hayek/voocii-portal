@@ -3,7 +3,9 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { MermaidRenderer } from '@/components/blog/MermaidRenderer';
+import { getAlternates } from '@/lib/seo';
 import { getTRPCServer } from '@/lib/trpc-server';
+import siteConfig from '@/site.config';
 
 interface Project {
   id: string;
@@ -39,6 +41,7 @@ export async function generateMetadata({ params }: PageProps) {
     return {
       title: `${project.title} | ${tNav('portfolio')}`,
       description: project.description ?? '',
+      alternates: getAlternates(`/portfolio/${slug}`, locale),
     };
   } catch {
     return { title: 'Project Details' };
@@ -73,7 +76,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     softwareVersion: '1.0.0',
     publisher: {
       '@type': 'Person',
-      name: 'Jane Doe',
+      name: siteConfig.site.author || 'Rick',
     },
   };
 

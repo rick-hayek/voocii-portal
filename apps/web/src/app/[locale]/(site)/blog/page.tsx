@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 import { BlogList } from '@/components/blog/BlogList';
+import { getAlternates } from '@/lib/seo';
 
 interface BlogPageProps {
   params: Promise<{ locale: string }>;
@@ -25,6 +26,7 @@ export async function generateMetadata({ params, searchParams }: BlogPageProps) 
   return {
     title: pageTitle,
     description: t('latestPosts'),
+    alternates: getAlternates('/blog', locale),
   };
 }
 

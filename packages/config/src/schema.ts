@@ -12,6 +12,7 @@ export const siteConfigSchema = z.object({
     description: z.string().default(''),
     url: z.string().url(),
     locale: z.string().default('en-US'),
+    author: z.string().default('Rick').optional(),
   }),
   preset: z.enum(['minimal', 'tech-blog', 'creative', 'full', 'devtools']).optional(),
   modules: z.record(z.string(), moduleConfigSchema).default({}),

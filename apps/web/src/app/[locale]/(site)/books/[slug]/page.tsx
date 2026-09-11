@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getAlternates } from '@/lib/seo';
 import { getTRPCServer } from '@/lib/trpc-server';
 import { BookDetailClient } from './BookDetailClient';
 
@@ -17,6 +18,7 @@ export async function generateMetadata({
     return {
       title: `${book.title} | ${tNav('books')}`,
       description: book.description || book.review || '',
+      alternates: getAlternates(`/books/${slug}`, locale),
     };
   } catch {
     return { title: 'Book Details' };

@@ -2,7 +2,7 @@ export const defaultAboutConfig = {
   title: 'The Developer',
   subtitle: 'ABOUT ME',
   description:
-    "Hello! I'm Jane Doe, a Full-Stack Engineer who loves building tools that make development easier and more enjoyable.\n\nWith a background in computer science and years of experience in the JavaScript ecosystem, I focus on creating performant, accessible, and beautiful web applications.\n\nWhen I'm not coding, you can find me exploring new technologies, contributing to open source, or sharing my knowledge through writing.",
+    "Hello! I'm Rick, a Full-Stack Engineer who loves building tools that make development easier and more enjoyable.\n\nWith a background in computer science and years of experience in the JavaScript ecosystem, I focus on creating performant, accessible, and beautiful web applications.\n\nWhen I'm not coding, you can find me exploring new technologies, contributing to open source, or sharing my knowledge through writing.",
   experiences: [
     { role: 'Senior Developer', company: 'Tech Corp', period: '2023 — Present' },
     { role: 'Full Stack Engineer', company: 'Startup Inc', period: '2020 — 2023' },

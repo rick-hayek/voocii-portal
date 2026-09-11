@@ -6,6 +6,7 @@ import siteConfig from '@/site.config';
 
 export interface LayoutProps {
   locale: string;
+  authorName?: string;
   authorRole: string;
   authorStackArr: string[] | null;
   developerEntries: { label: string; element: React.ReactNode }[];
@@ -27,6 +28,7 @@ export interface LayoutProps {
 
 export function ClassicLayout({
   locale,
+  authorName,
   authorRole,
   developerEntries,
   heroTitle1,
@@ -38,6 +40,7 @@ export function ClassicLayout({
   projects,
   books,
   guestbookEntries,
+  links,
   postCount,
   projectCount,
   guestbookCount,
@@ -45,7 +48,7 @@ export function ClassicLayout({
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Jane Doe',
+    name: authorName || siteConfig.site.author || 'Rick',
     url: siteConfig.site.url,
     sameAs: [
       process.env.NEXT_PUBLIC_GITHUB_URL || 'https://github.com/rick-hayek',

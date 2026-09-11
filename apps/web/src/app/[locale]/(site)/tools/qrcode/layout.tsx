@@ -5,12 +5,13 @@ import { getAlternates } from '@/lib/seo';
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const tNav = await getTranslations({ locale, namespace: 'Navigation' });
+  const tTools = await getTranslations({ locale, namespace: 'Tools' });
   return {
-    title: tNav('portfolio'),
-    alternates: getAlternates('/portfolio', locale),
+    title: `${tTools('qrcode.name')} | ${tNav('tools')}`,
+    alternates: getAlternates('/tools/qrcode', locale),
   };
 }
 
-export default function PortfolioLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return children;
 }

@@ -29,13 +29,6 @@ export const metadata: Metadata = {
   },
   description: siteConfig.site.description,
   metadataBase: new URL(siteConfig.site.url),
-  alternates: {
-    canonical: '/',
-    languages: {
-      en: '/en',
-      zh: '/zh',
-    },
-  },
   openGraph: {
     title: siteConfig.site.title,
     description: siteConfig.site.description,

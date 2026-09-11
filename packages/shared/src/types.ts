@@ -5,6 +5,7 @@ export interface SiteConfig {
     description: string;
     url: string;
     locale: string;
+    author?: string;
   };
   preset?: 'minimal' | 'tech-blog' | 'creative' | 'full' | 'devtools';
   modules: Record<string, ModuleConfig>;

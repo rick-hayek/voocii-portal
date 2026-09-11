@@ -13,6 +13,7 @@ import { SafeMDXRemote } from '@/components/blog/SafeMDXRemote';
 import { TableOfContents } from '@/components/blog/TableOfContents';
 import { getCategoryName } from '@/lib/category';
 import rehypeCustomHighlight from '@/lib/rehype-custom-highlight';
+import { getAlternates } from '@/lib/seo';
 import { extractTocItems } from '@/lib/toc';
 import { getTRPCServer } from '@/lib/trpc-server';
 import siteConfig from '@/site.config';
@@ -47,6 +48,7 @@ export async function generateMetadata({
   return {
     title: `${post.title} | ${tNav('blog')}`,
     description: post.excerpt ?? '',
+    alternates: getAlternates(`/blog/${slug}`, locale),
   };
 }
 
@@ -67,6 +69,9 @@ export default async function BlogPostPage({
   const t = await getTranslations({ locale, namespace: 'Navigation' });
   const hasToc = extractTocItems(post.content).length > 0;
 
+  const authorName = post.author.name || siteConfig.site.author || 'Rick';
+  const canonicalUrl = `${siteConfig.site.url}${locale === 'en' ? '/en' : ''}/blog/${post.slug}`;
+
   const blogSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -76,7 +81,7 @@ export default async function BlogPostPage({
     dateModified: post.updatedAt ? new Date(post.updatedAt).toISOString() : undefined,
     author: {
       '@type': 'Person',
-      name: post.author.name || 'Jane Doe',
+      name: authorName,
       image: post.author.image || '',
     },
     publisher: {
@@ -89,7 +94,7 @@ export default async function BlogPostPage({
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${siteConfig.site.url}/${locale}/blog/${post.slug}`,
+      '@id': canonicalUrl,
     },
   };
 
