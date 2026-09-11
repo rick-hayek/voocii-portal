@@ -3,7 +3,12 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { MermaidRenderer } from '@/components/blog/MermaidRenderer';
-import { getAlternates } from '@/lib/seo';
+import {
+  generateBreadcrumbSchema,
+  getAbsoluteImageUrl,
+  getAlternates,
+  getCanonicalUrl,
+} from '@/lib/seo';
 import { getTRPCServer } from '@/lib/trpc-server';
 import siteConfig from '@/site.config';
 
@@ -38,10 +43,37 @@ export async function generateMetadata({ params }: PageProps) {
     const project = (await trpc.portfolio.bySlug({ slug })) as Project | null;
     if (!project) return { title: 'Not Found' };
     const tNav = await getTranslations({ locale, namespace: 'Navigation' });
+    const title = `${project.title} | ${tNav('portfolio')}`;
+    const desc =
+      locale === 'en' && project.descriptionEn ? project.descriptionEn : project.description ?? '';
+    const canonicalUrl = getCanonicalUrl(`/portfolio/${slug}`, locale);
+    const coverImageUrl = getAbsoluteImageUrl(project.coverImage);
+
     return {
-      title: `${project.title} | ${tNav('portfolio')}`,
-      description: project.description ?? '',
+      title,
+      description: desc,
       alternates: getAlternates(`/portfolio/${slug}`, locale),
+      openGraph: {
+        type: 'website',
+        title,
+        description: desc,
+        url: canonicalUrl,
+        siteName: siteConfig.site.title,
+        images: coverImageUrl
+          ? [
+              {
+                url: coverImageUrl,
+                alt: project.title,
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: coverImageUrl ? 'summary_large_image' : 'summary',
+        title,
+        description: desc,
+        images: coverImageUrl ? [coverImageUrl] : undefined,
+      },
     };
   } catch {
     return { title: 'Project Details' };
@@ -63,6 +95,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const tNav = await getTranslations({ locale, namespace: 'Navigation' });
+  const canonicalUrl = getCanonicalUrl(`/portfolio/${project.slug}`, locale);
+
   const projectSchema = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
@@ -80,11 +115,21 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     },
   };
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: tNav('home'), url: getCanonicalUrl('', locale) },
+    { name: tNav('portfolio'), url: getCanonicalUrl('/portfolio', locale) },
+    { name: project.title, url: canonicalUrl },
+  ]);
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <div className="mt-4 flex items-center gap-3">

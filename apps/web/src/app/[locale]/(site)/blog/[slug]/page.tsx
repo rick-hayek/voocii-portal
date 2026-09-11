@@ -13,7 +13,12 @@ import { SafeMDXRemote } from '@/components/blog/SafeMDXRemote';
 import { TableOfContents } from '@/components/blog/TableOfContents';
 import { getCategoryName } from '@/lib/category';
 import rehypeCustomHighlight from '@/lib/rehype-custom-highlight';
-import { getAlternates } from '@/lib/seo';
+import {
+  generateBreadcrumbSchema,
+  getAbsoluteImageUrl,
+  getAlternates,
+  getCanonicalUrl,
+} from '@/lib/seo';
 import { extractTocItems } from '@/lib/toc';
 import { getTRPCServer } from '@/lib/trpc-server';
 import siteConfig from '@/site.config';
@@ -45,10 +50,41 @@ export async function generateMetadata({
   if (!post) return { title: 'Not Found' };
 
   const tNav = await getTranslations({ locale, namespace: 'Navigation' });
+  const title = `${post.title} | ${tNav('blog')}`;
+  const description = post.excerpt ?? '';
+  const canonicalUrl = getCanonicalUrl(`/blog/${slug}`, locale);
+  const coverImageUrl = getAbsoluteImageUrl(post.coverImage);
+  const authorName = post.author?.name || siteConfig.site.author || 'Rick';
+
   return {
-    title: `${post.title} | ${tNav('blog')}`,
-    description: post.excerpt ?? '',
+    title,
+    description,
     alternates: getAlternates(`/blog/${slug}`, locale),
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: siteConfig.site.title,
+      publishedTime: post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined,
+      modifiedTime: post.updatedAt ? new Date(post.updatedAt).toISOString() : undefined,
+      authors: [authorName],
+      tags: post.tags?.map((t) => t.tag.name) ?? [],
+      images: coverImageUrl
+        ? [
+            {
+              url: coverImageUrl,
+              alt: post.title,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: coverImageUrl ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: coverImageUrl ? [coverImageUrl] : undefined,
+    },
   };
 }
 
@@ -70,7 +106,7 @@ export default async function BlogPostPage({
   const hasToc = extractTocItems(post.content).length > 0;
 
   const authorName = post.author.name || siteConfig.site.author || 'Rick';
-  const canonicalUrl = `${siteConfig.site.url}${locale === 'en' ? '/en' : ''}/blog/${post.slug}`;
+  const canonicalUrl = getCanonicalUrl(`/blog/${post.slug}`, locale);
 
   const blogSchema = {
     '@context': 'https://schema.org',
@@ -98,6 +134,12 @@ export default async function BlogPostPage({
     },
   };
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: t('home'), url: getCanonicalUrl('', locale) },
+    { name: t('blog'), url: getCanonicalUrl('/blog', locale) },
+    { name: post.title, url: canonicalUrl },
+  ]);
+
   return (
     <div className="px-4 py-12 sm:px-6 lg:px-8 mx-auto w-full max-w-[1536px]">
       {/* Load KaTeX stylesheet and core JS script from CDN to avoid compiling local assets */}
@@ -120,6 +162,10 @@ export default async function BlogPostPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       {/* Symmetrical 3-Column Layout: Left Balance Spacer + Centered Article + Right TOC */}

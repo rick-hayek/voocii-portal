@@ -163,5 +163,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const activeLayout = siteConfig.homeLayout || 'classic';
   const ActiveLayoutComponent = layoutMap[activeLayout] || layoutMap.classic;
 
-  return <ActiveLayoutComponent {...layoutProps} />;
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteConfig.site.title,
+    url: siteConfig.site.url,
+    description: siteConfig.site.description,
+    inLanguage: ['zh-CN', 'en-US'],
+    publisher: {
+      '@type': 'Person',
+      name: authorName || siteConfig.site.author || 'Rick',
+      url: siteConfig.site.url,
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <ActiveLayoutComponent {...layoutProps} />
+    </>
+  );
 }
