@@ -1,4 +1,4 @@
-# Voocii Portal ![Version](https://img.shields.io/badge/version-v1.0.6-blue.svg)
+# Voocii Portal ![Version](https://img.shields.io/badge/version-v1.0.7-blue.svg)
 
 基于 Next.js 16、tRPC、Prisma 与 Tailwind CSS v4 构建的现代全栈个人门户网站与作品集平台。
 

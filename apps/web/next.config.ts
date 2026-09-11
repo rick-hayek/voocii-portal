@@ -25,6 +25,14 @@ const nextConfig: NextConfig = {
         source: '/rss.xml',
         destination: '/api/feed.xml',
       },
+      {
+        source: '/blog/:slug.md',
+        destination: '/api/raw/blog/:slug',
+      },
+      {
+        source: '/:locale(zh|en)/blog/:slug.md',
+        destination: '/api/raw/blog/:slug',
+      },
     ];
   },
   images: {
