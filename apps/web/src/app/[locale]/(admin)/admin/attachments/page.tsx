@@ -175,9 +175,7 @@ export default function AttachmentsAdminPage() {
             onSubmit={handleUpload}
             className="rounded-xl border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] p-5 space-y-4"
           >
-            <h2 className="text-md font-bold text-[var(--portal-color-text)]">
-              {t('upload')}
-            </h2>
+            <h2 className="text-md font-bold text-[var(--portal-color-text)]">{t('upload')}</h2>
 
             {error && (
               <p className="rounded-lg bg-red-50 p-2.5 text-xs text-red-600 dark:bg-red-900/20 dark:text-red-400">
@@ -357,7 +355,7 @@ export default function AttachmentsAdminPage() {
                             className="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded border border-compat text-[var(--portal-color-text-secondary)] hover:bg-[var(--portal-color-bg)] transition-colors no-underline"
                           >
                             <Eye className="h-3.5 w-3.5" />
-                            <span className="hidden sm:inline">View</span>
+                            <span className="hidden sm:inline">{t('view')}</span>
                           </a>
                           <button
                             type="button"
@@ -380,4 +378,3 @@ export default function AttachmentsAdminPage() {
     </div>
   );
 }
-

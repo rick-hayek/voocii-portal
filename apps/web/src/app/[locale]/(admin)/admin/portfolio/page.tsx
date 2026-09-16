@@ -123,7 +123,9 @@ export default function AdminPortfolioPage() {
                   }`}
                 >
                   <Star className="h-3.5 w-3.5" fill={p.featured ? 'currentColor' : 'none'} />
-                  <span className="hidden sm:inline">{p.featured ? t('featured') : t('normal')}</span>
+                  <span className="hidden sm:inline">
+                    {p.featured ? t('featured') : t('normal')}
+                  </span>
                 </button>
                 <a
                   href={`/portfolio/${p.slug}`}
@@ -132,7 +134,7 @@ export default function AdminPortfolioPage() {
                   className="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded border border-compat text-[var(--portal-color-text-secondary)] hover:bg-[var(--portal-color-bg)] transition-colors no-underline"
                 >
                   <Eye className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">{t('edit')}</span>
+                  <span className="hidden sm:inline">{t('view')}</span>
                 </a>
                 <Link
                   href={`/admin/portfolio/${p.id}`}
@@ -157,4 +159,3 @@ export default function AdminPortfolioPage() {
     </div>
   );
 }
-

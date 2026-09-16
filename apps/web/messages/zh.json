@@ -774,6 +774,7 @@
       "noProjects": "暂无作品数据",
       "featured": "精选",
       "normal": "普通",
+      "view": "查看",
       "edit": "编辑",
       "delete": "删除",
       "deleteConfirm": "确定要删除该作品吗？",
@@ -809,6 +810,7 @@
         "read": "已读",
         "want": "想读"
       },
+      "view": "查看",
       "edit": "编辑",
       "delete": "删除",
       "deleteConfirm": "确定要删除这本书的推荐吗？",
@@ -891,6 +893,7 @@
       "noAttachments": "暂无上传附件",
       "copyUrl": "复制链接",
       "copied": "已复制",
+      "view": "查看",
       "delete": "删除",
       "deleteConfirm": "确定要删除该附件吗？"
     },

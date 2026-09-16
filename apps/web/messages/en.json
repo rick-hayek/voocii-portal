@@ -774,6 +774,7 @@
       "noProjects": "No projects found",
       "featured": "Featured",
       "normal": "Normal",
+      "view": "View",
       "edit": "Edit",
       "delete": "Delete",
       "deleteConfirm": "Delete this project?",
@@ -809,6 +810,7 @@
         "read": "Read",
         "want": "Want to Read"
       },
+      "view": "View",
       "edit": "Edit",
       "delete": "Delete",
       "deleteConfirm": "Delete this book recommendation?",
@@ -891,6 +893,7 @@
       "noAttachments": "No attachments found",
       "copyUrl": "Copy Link",
       "copied": "Copied",
+      "view": "View",
       "delete": "Delete",
       "deleteConfirm": "Delete this attachment?"
     },

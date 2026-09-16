@@ -147,7 +147,7 @@ export default function AdminBooksPage() {
                           className="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded border border-compat text-[var(--portal-color-text-secondary)] hover:bg-[var(--portal-color-bg)] transition-colors no-underline"
                         >
                           <Eye className="h-3.5 w-3.5" />
-                          <span className="hidden sm:inline">{t('edit')}</span>
+                          <span className="hidden sm:inline">{t('view')}</span>
                         </Link>
                         <Link
                           href={`/admin/books/${book.id}`}
@@ -176,4 +176,3 @@ export default function AdminBooksPage() {
     </div>
   );
 }
-
