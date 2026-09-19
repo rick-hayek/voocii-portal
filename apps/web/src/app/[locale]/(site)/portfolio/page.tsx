@@ -181,7 +181,7 @@ export default function PortfolioPage() {
   const loading = loadingProjects || (loadingTechs && techStacks.length === 0);
 
   return (
-    <div className="border-t border-b border-compat-soft bg-[var(--portal-color-surface)]">
+    <div className="w-full">
       <div className="pt-8 md:pt-24 pb-12 md:pb-20 px-4 md:px-8 max-w-[1200px] mx-auto w-full">
         {/* Section header */}
         <div className="flex items-baseline" style={{ gap: '.8rem', marginBottom: '2.5rem' }}>
@@ -258,7 +258,7 @@ export default function PortfolioPage() {
                 style={{
                   height: 320,
                   borderRadius: 16,
-                  background: 'var(--portal-color-background)',
+                  background: 'var(--portal-color-surface)',
                 }}
               />
             ))}
@@ -291,7 +291,7 @@ export default function PortfolioPage() {
                   key={project.id}
                   href={`/portfolio/${project.slug}`}
                   className="group cursor-pointer overflow-hidden border border-compat hover-border-compat-primary no-underline transition-all duration-300 hover:-translate-y-1"
-                  style={{ background: 'var(--portal-color-background)', borderRadius: 16 }}
+                  style={{ background: 'var(--portal-color-surface)', borderRadius: 16 }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,.08)')
                   }

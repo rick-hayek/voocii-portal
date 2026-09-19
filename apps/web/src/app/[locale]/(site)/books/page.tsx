@@ -43,7 +43,7 @@ export default async function PublicBooksPage({ params }: PageProps) {
   }
 
   return (
-    <div className="border-t border-b border-compat-soft bg-[var(--portal-color-surface)]">
+    <div className="w-full">
       <div className="pt-8 md:pt-24 pb-12 md:pb-20 px-4 md:px-8 max-w-[1200px] mx-auto w-full">
         {/* Section header */}
         <div className="flex items-baseline" style={{ gap: '.8rem', marginBottom: '2.5rem' }}>

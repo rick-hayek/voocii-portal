@@ -145,7 +145,7 @@ export default function TrendingPage() {
   const error = swrError ? 'Failed to load trending data' : '';
 
   return (
-    <div className="border-t border-b border-compat-soft bg-[var(--portal-color-surface)]">
+    <div className="w-full">
       <div className="pt-8 md:pt-24 pb-12 md:pb-20 px-4 md:px-8 max-w-[1200px] mx-auto w-full">
         {/* Section Header */}
         <div className="flex items-baseline" style={{ gap: '.8rem', marginBottom: '1.5rem' }}>
@@ -195,7 +195,7 @@ export default function TrendingPage() {
                     e.stopPropagation();
                     setIsWeekOpen(!isWeekOpen);
                   }}
-                  className="flex items-center justify-between gap-2 cursor-pointer text-sm px-3 py-1.5 rounded-lg border border-compat bg-[var(--portal-color-background)] text-[var(--portal-color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--portal-color-primary)]/30"
+                  className="flex items-center justify-between gap-2 cursor-pointer text-sm px-3 py-1.5 rounded-lg border border-compat bg-[var(--portal-color-surface)] text-[var(--portal-color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--portal-color-primary)]/30"
                   aria-label="Select week"
                 >
                   <span className="font-[500]">
@@ -259,7 +259,7 @@ export default function TrendingPage() {
               <div
                 // biome-ignore lint/suspicious/noArrayIndexKey: skeleton items
                 key={i}
-                className="animate-pulse rounded-xl border border-compat-soft bg-[var(--portal-color-background)] p-5 space-y-3"
+                className="animate-pulse rounded-xl border border-compat-soft bg-[var(--portal-color-surface)] p-5 space-y-3"
               >
                 <div className="flex items-center gap-2">
                   <div className="h-5 w-5 rounded-full bg-gray-200 dark:bg-gray-800" />
@@ -279,7 +279,7 @@ export default function TrendingPage() {
             {error}
           </div>
         ) : repos.length === 0 ? (
-          <div className="rounded-2xl border border-[var(--portal-color-border)] bg-[var(--portal-color-background)] p-16 text-center">
+          <div className="rounded-2xl border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] p-16 text-center">
             <span className="text-4xl mb-4 block">🔍</span>
             <p className="text-[var(--portal-color-text-secondary)] font-medium">{t('noData')}</p>
           </div>
@@ -294,7 +294,7 @@ export default function TrendingPage() {
               return (
                 <div
                   key={repo.id}
-                  className="group relative rounded-xl border border-compat-soft bg-[var(--portal-color-background)] p-5 transition-all duration-200 hover:border-[var(--portal-color-primary)]/40 hover:shadow-lg"
+                  className="group relative rounded-xl border border-compat-soft bg-[var(--portal-color-surface)] p-5 transition-all duration-200 hover:border-[var(--portal-color-primary)]/40 hover:shadow-lg"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {/* Header: Repo name + stars */}
