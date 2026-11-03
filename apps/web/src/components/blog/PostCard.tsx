@@ -1,4 +1,5 @@
 import type { Prisma } from '@portal/db';
+import { formatPostDate } from '@portal/shared';
 import { useLocale } from 'next-intl';
 import { getCategoryName } from '@/lib/category';
 
@@ -15,15 +16,7 @@ export function PostCard({ post }: { post: PostWithRelations }) {
   const locale = useLocale();
 
   const formattedDate = post.publishedAt
-    ? (() => {
-        const date = new Date(post.publishedAt);
-        const isCurrentYear = date.getFullYear() === new Date().getFullYear();
-        return date.toLocaleDateString(locale, {
-          year: isCurrentYear ? undefined : 'numeric',
-          month: 'short',
-          day: 'numeric',
-        });
-      })()
+    ? formatPostDate(post.publishedAt, locale)
     : '—';
 
   return (

@@ -1,3 +1,4 @@
+import { formatPostDate } from '@portal/shared';
 import Image from 'next/image';
 import { ScrollDownButton } from '@/components/home/ScrollDownButton';
 import { Link } from '@/i18n/routing';
@@ -232,15 +233,7 @@ export function ClassicLayout({
             {posts.length > 0 ? (
               posts.map((post) => {
                 const formattedDate = post.publishedAt
-                  ? (() => {
-                    const date = new Date(post.publishedAt);
-                    const isCurrentYear = date.getFullYear() === new Date().getFullYear();
-                    return date.toLocaleDateString(locale, {
-                      year: isCurrentYear ? undefined : 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    });
-                  })()
+                  ? formatPostDate(post.publishedAt, locale)
                   : '—';
 
                 return (

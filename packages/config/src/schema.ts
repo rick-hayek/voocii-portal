@@ -59,9 +59,7 @@ export const siteConfigSchema = z.object({
     .optional(),
   avatar: z
     .object({
-      urlTemplate: z
-        .string()
-        .default('https://cravatar.cn/avatar/{hash}?d={fallback}&s={size}'),
+      urlTemplate: z.string().default('https://cravatar.cn/avatar/{hash}?d={fallback}&s={size}'),
     })
     .default({
       urlTemplate: 'https://cravatar.cn/avatar/{hash}?d={fallback}&s={size}',

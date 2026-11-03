@@ -3,8 +3,9 @@
 import { Calendar, ChevronDown, ChevronRight, Filter, Folder, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { getLocalMonthUtcRange } from '@portal/shared';
 import { PostCard } from '@/components/blog/PostCard';
 import { useLocalSWR } from '@/hooks/useLocalSWR';
 import { Link } from '@/i18n/routing';
@@ -70,7 +71,7 @@ function formatMonthLabel(year: number, month: number, locale: string) {
     return `${year}年${month}月`;
   }
   const date = new Date(Date.UTC(year, month - 1, 1));
-  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
 export function BlogList() {
@@ -83,6 +84,20 @@ export function BlogList() {
   const tag = searchParams.get('tag') || undefined;
   const month = searchParams.get('month') || undefined;
 
+  const clientTz =
+    typeof Intl !== 'undefined'
+      ? Intl.DateTimeFormat().resolvedOptions().timeZone
+      : undefined;
+
+  const { startDate, endDate } = useMemo(() => {
+    if (!month) return { startDate: undefined, endDate: undefined };
+    const parts = month.split('-');
+    const y = parseInt(parts[0] || '0', 10);
+    const m = parseInt(parts[1] || '0', 10);
+    if (!y || !m || m < 1 || m > 12) return { startDate: undefined, endDate: undefined };
+    return getLocalMonthUtcRange(y, m);
+  }, [month]);
+
   const [mobileMonthOpen, setMobileMonthOpen] = useState(false);
   const [collapsedYears, setCollapsedYears] = useState<Record<number, boolean>>({});
   const [mounted, setMounted] = useState(false);
@@ -93,7 +108,7 @@ export function BlogList() {
 
   // 1. Fetch Blog posts
   const { data: blogData, loading: loadingPosts } = useLocalSWR<BlogData>(
-    `blog-posts-page-${page}-cat-${category || 'all'}-tag-${tag || 'all'}-month-${month || 'all'}`,
+    `blog-posts-page-${page}-cat-${category || 'all'}-tag-${tag || 'all'}-start-${startDate || 'all'}-end-${endDate || 'all'}`,
     useCallback(async () => {
       const res = await fetch(
         '/api/trpc/post.list?batch=1&input=' +
@@ -105,7 +120,8 @@ export function BlogList() {
                   limit: 20,
                   categorySlug: category,
                   tagSlug: tag,
-                  month: month,
+                  startDate,
+                  endDate,
                 },
               },
             }),
@@ -113,7 +129,7 @@ export function BlogList() {
       );
       const json = await res.json();
       return json[0]?.result?.data?.json as BlogData;
-    }, [page, category, tag, month]),
+    }, [page, category, tag, startDate, endDate]),
   );
 
   // 2. Fetch categories
@@ -131,15 +147,21 @@ export function BlogList() {
 
   // 3. Fetch monthly archives
   const { data: archivesData } = useLocalSWR<ArchiveItem[]>(
-    'blog-archives',
+    `blog-archives-tz-${clientTz || 'utc'}`,
     useCallback(async () => {
       const res = await fetch(
         '/api/trpc/post.archives?batch=1&input=' +
-          encodeURIComponent(JSON.stringify({ '0': { json: null } })),
+          encodeURIComponent(
+            JSON.stringify({
+              '0': {
+                json: clientTz ? { timeZone: clientTz } : null,
+              },
+            }),
+          ),
       );
       const json = await res.json();
       return (json[0]?.result?.data?.json ?? []) as ArchiveItem[];
-    }, []),
+    }, [clientTz]),
   );
 
   useEffect(() => {
@@ -244,7 +266,14 @@ export function BlogList() {
                 <span>
                   {currentMonthItem
                     ? formatMonthLabel(currentMonthItem.year, currentMonthItem.month, locale)
-                    : t('allMonths')}
+                    : month
+                      ? (() => {
+                          const parts = month.split('-');
+                          const y = parseInt(parts[0] || '0', 10);
+                          const m = parseInt(parts[1] || '0', 10);
+                          return y && m ? formatMonthLabel(y, m, locale) : month;
+                        })()
+                      : t('allMonths')}
                 </span>
                 <ChevronDown className="h-3 w-3" />
               </button>
@@ -363,10 +392,17 @@ export function BlogList() {
                   </Link>
                 </span>
               )}
-              {currentMonthItem && (
+              {month && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-[var(--portal-color-primary-soft)] text-[var(--portal-color-primary)] px-2.5 py-1 font-medium">
                   <Calendar className="h-3 w-3" />
-                  {formatMonthLabel(currentMonthItem.year, currentMonthItem.month, locale)}
+                  {currentMonthItem
+                    ? formatMonthLabel(currentMonthItem.year, currentMonthItem.month, locale)
+                    : (() => {
+                        const parts = month.split('-');
+                        const y = parseInt(parts[0] || '0', 10);
+                        const m = parseInt(parts[1] || '0', 10);
+                        return y && m ? formatMonthLabel(y, m, locale) : month;
+                      })()}
                   <Link href={getFilterUrl({ mo: null })} className="hover:opacity-75">
                     <X className="h-3 w-3 ml-0.5" />
                   </Link>

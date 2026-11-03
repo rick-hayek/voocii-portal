@@ -61,3 +61,68 @@ export function formatCommentDate(dateInput: Date | string, locale = 'zh'): stri
     day: 'numeric',
   });
 }
+
+/**
+ * Formats a post's published date in the current runtime's local timezone:
+ * - Omits the year if it matches the current year
+ */
+export function formatPostDate(dateInput: Date | string, locale = 'zh'): string {
+  const date = new Date(dateInput);
+  const isCurrentYear = date.getFullYear() === new Date().getFullYear();
+
+  return date.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
+    year: isCurrentYear ? undefined : 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+/**
+ * Converts a local year & month (1-12) into a UTC ISO string range [startDate, endDate)
+ * using the caller runtime's local timezone.
+ */
+export function getLocalMonthUtcRange(
+  year: number,
+  month: number,
+): { startDate: string; endDate: string } {
+  const start = new Date(year, month - 1, 1, 0, 0, 0);
+  const end = new Date(year, month, 1, 0, 0, 0);
+  return {
+    startDate: start.toISOString(),
+    endDate: end.toISOString(),
+  };
+}
+
+/**
+ * Returns year, month (1-12), and key (YYYY-MM) for a date evaluated in a specific timeZone.
+ * Falls back to UTC if timeZone is omitted or invalid.
+ */
+export function getYearMonthInTimeZone(
+  dateInput: Date | string,
+  timeZone?: string,
+): { year: number; month: number; key: string } {
+  const d = new Date(dateInput);
+  if (!timeZone || timeZone === 'UTC') {
+    const iso = d.toISOString();
+    const year = parseInt(iso.slice(0, 4), 10);
+    const month = parseInt(iso.slice(5, 7), 10);
+    return { year, month, key: `${year}-${String(month).padStart(2, '0')}` };
+  }
+
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+    }).formatToParts(d);
+    const year = parseInt(parts.find((p) => p.type === 'year')?.value || '1970', 10);
+    const month = parseInt(parts.find((p) => p.type === 'month')?.value || '1', 10);
+    const key = `${year}-${String(month).padStart(2, '0')}`;
+    return { year, month, key };
+  } catch {
+    const iso = d.toISOString();
+    const year = parseInt(iso.slice(0, 4), 10);
+    const month = parseInt(iso.slice(5, 7), 10);
+    return { year, month, key: `${year}-${String(month).padStart(2, '0')}` };
+  }
+}
