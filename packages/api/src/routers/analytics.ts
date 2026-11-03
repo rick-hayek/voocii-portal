@@ -80,12 +80,15 @@ export const analyticsRouter = router({
           counts[slug] = (counts[slug] || 0) + 1;
         }
 
+        // Use raw SQL to increment views without triggering Prisma's @updatedAt timestamp
         await Promise.allSettled(
-          Object.entries(counts).map(([slug, count]) =>
-            ctx.prisma.post.updateMany({
-              where: { slug },
-              data: { views: { increment: count } },
-            }),
+          Object.entries(counts).map(
+            ([slug, count]) =>
+              ctx.prisma.$executeRaw`
+                UPDATE "Post"
+                SET "views" = "views" + ${count}
+                WHERE "slug" = ${slug}
+              `,
           ),
         );
       }
