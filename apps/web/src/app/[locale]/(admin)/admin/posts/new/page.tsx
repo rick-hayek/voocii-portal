@@ -4,7 +4,7 @@ import { Check, Copy } from 'lucide-react';
 import { marked } from 'marked';
 import { useEffect, useState } from 'react';
 import { MermaidRenderer } from '@/components/blog/MermaidRenderer';
-import { Dropdown, DropdownOption } from '@/components/ui/Dropdown';
+import { Dropdown } from '@/components/ui/Dropdown';
 import { useRouter } from '@/i18n/routing';
 
 const parseGfmAlertsInHtml = (html: string) => {
@@ -215,106 +215,143 @@ export default function NewPostPage() {
         )}
 
         {/* Title */}
-        <div>
-          <label className="mb-1 block text-sm font-medium text-[var(--portal-color-text)]">
+        <div className="flex items-center gap-3">
+          <label
+            htmlFor="post-title"
+            className="w-20 shrink-0 text-sm font-medium text-[var(--portal-color-text)] whitespace-nowrap"
+          >
             Title
           </label>
           <input
+            id="post-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none"
+            className="flex-1 min-w-0 rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none"
             placeholder="Post title"
           />
         </div>
 
-        {/* Slug */}
-        <div>
-          <label className="mb-1 block text-sm font-medium text-[var(--portal-color-text)]">
-            Slug
-          </label>
-          <input
-            type="text"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            required
-            className="w-full rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none font-mono"
-          />
+        {/* Slug + Status */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="post-slug"
+              className="w-20 shrink-0 text-sm font-medium text-[var(--portal-color-text)] whitespace-nowrap"
+            >
+              Slug
+            </label>
+            <input
+              id="post-slug"
+              type="text"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              required
+              className="flex-1 min-w-0 rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none font-mono"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="post-status"
+              className="w-20 sm:w-auto shrink-0 text-sm font-medium text-[var(--portal-color-text)] whitespace-nowrap"
+            >
+              Status
+            </label>
+            <div className="flex-1 min-w-0" id="post-status">
+              <Dropdown
+                value={status}
+                onChange={(val) => setStatus(val as 'draft' | 'published')}
+                options={[
+                  { value: 'draft', label: 'Draft' },
+                  { value: 'published', label: 'Published' },
+                ]}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Category + Status */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-sm font-medium text-[var(--portal-color-text)]">
-                Category
-              </label>
-              <button
-                type="button"
-                onClick={() => setShowNewCatForm(!showNewCatForm)}
-                className="text-xs text-[var(--portal-color-primary)] hover:underline focus:outline-none"
-              >
-                {showNewCatForm ? 'Select Category' : '+ Add New Category'}
-              </button>
-            </div>
+        {/* Category */}
+        <div className="flex items-center gap-3">
+          <label
+            htmlFor="post-category"
+            className="w-20 shrink-0 text-sm font-medium text-[var(--portal-color-text)] whitespace-nowrap"
+          >
+            Category
+          </label>
+          <div
+            id="post-category"
+            className="flex flex-1 items-center gap-3 min-w-0 flex-wrap sm:flex-nowrap"
+          >
             {showNewCatForm ? (
-              <div className="flex gap-2">
+              <div className="flex flex-1 items-center gap-2 min-w-0">
                 <input
                   type="text"
                   placeholder="New category name"
                   value={newCatName}
                   onChange={(e) => setNewCatName(e.target.value)}
-                  className="flex-1 rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none"
+                  className="flex-1 min-w-0 rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleCreateCategory}
                   disabled={creatingCat || !newCatName.trim()}
-                  className="rounded-lg bg-[var(--portal-color-primary)] px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                  className="rounded-lg bg-[var(--portal-color-primary)] px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 shrink-0 cursor-pointer"
                 >
                   {creatingCat ? 'Creating…' : 'Add'}
                 </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowNewCatForm(false);
+                    setNewCatName('');
+                  }}
+                  className="rounded-lg border border-[var(--portal-color-border)] px-3 py-2 text-xs text-[var(--portal-color-text-secondary)] hover:bg-[var(--portal-color-background)] shrink-0 cursor-pointer"
+                >
+                  Cancel
+                </button>
               </div>
             ) : (
-              <Dropdown
-                value={categoryId}
-                onChange={(val) => setCategoryId(val)}
-                options={[
-                  { value: '', label: 'No category' },
-                  ...categories.map((c) => ({
-                    value: c.id,
-                    label: c.name_en ? `${c.name} (${c.name_en})` : c.name,
-                  })),
-                ]}
-              />
+              <>
+                <div className="flex-1 min-w-0">
+                  <Dropdown
+                    value={categoryId}
+                    onChange={(val) => setCategoryId(val)}
+                    options={[
+                      { value: '', label: 'No category' },
+                      ...categories.map((c) => ({
+                        value: c.id,
+                        label: c.name_en ? `${c.name} (${c.name_en})` : c.name,
+                      })),
+                    ]}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowNewCatForm(true)}
+                  className="text-xs font-medium text-[var(--portal-color-primary)] hover:underline focus:outline-none whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  + Add New Category
+                </button>
+              </>
             )}
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[var(--portal-color-text)]">
-              Status
-            </label>
-            <Dropdown
-              value={status}
-              onChange={(val) => setStatus(val as any)}
-              options={[
-                { value: 'draft', label: 'Draft' },
-                { value: 'published', label: 'Published' },
-              ]}
-            />
           </div>
         </div>
 
         {/* Excerpt */}
-        <div>
-          <label className="mb-1 block text-sm font-medium text-[var(--portal-color-text)]">
+        <div className="flex items-center gap-3">
+          <label
+            htmlFor="post-excerpt"
+            className="w-20 shrink-0 text-sm font-medium text-[var(--portal-color-text)] whitespace-nowrap"
+          >
             Excerpt
           </label>
-          <textarea
+          <input
+            id="post-excerpt"
+            type="text"
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
-            rows={2}
-            className="w-full resize-none rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none"
+            className="flex-1 min-w-0 rounded-lg border border-[var(--portal-color-border)] bg-[var(--portal-color-surface)] px-3 py-2 text-sm text-[var(--portal-color-text)] focus:border-[var(--portal-color-primary)] focus:outline-none"
             placeholder="Brief summary (optional)"
           />
         </div>
@@ -322,7 +359,10 @@ export default function NewPostPage() {
         {/* Content (Markdown Editor with Preview Tab) */}
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium text-[var(--portal-color-text)]">
+            <label
+              htmlFor="post-content"
+              className="text-sm font-medium text-[var(--portal-color-text)]"
+            >
               Content (Markdown)
             </label>
             <div className="flex items-center gap-2">
@@ -374,6 +414,7 @@ export default function NewPostPage() {
 
           {tab === 'edit' ? (
             <textarea
+              id="post-content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               required
