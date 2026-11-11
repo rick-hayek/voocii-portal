@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [1.0.7] - 2026-09-11
+
+### Added
+- **LLM RAG & Machine-Readable Feeds**: Provide `/llms.txt` and `/llms-full.txt` standard endpoints for LLM context curation and RAG crawlers, along with raw Markdown endpoints (`/api/raw/blog/[slug]`) for clean article content retrieval.
+- **Enhanced SEO & Structured Data**: Implement rich OpenGraph and Twitter card metadata, Schema.org `BreadcrumbList` JSON-LD structured data, and a unified SEO alternates helper for canonical URLs and `hreflang` language tags.
+- **Serverless Connection Pooling**: Add `DIRECT_URL` configuration to Prisma schema and Turborepo environment for seamless compatibility with PostgreSQL connection poolers (e.g., Supabase / Neon / PgBouncer).
+
+### Fixed & Improved
+- **Timezone-Aware Blog Archive Filtering**: Dynamically compute local timezone UTC ranges on the client when querying by month (`/blog?month=YYYY-MM`), resolving calendar date boundary mismatches across different global timezones.
+- **Preserve Post Modification Timestamps on Views**: Switch `Post.views` page counter incrementation to raw SQL execution, preventing page view tracking from unintentionally updating the `updatedAt` article modification timestamp.
+- **Friend Link Sorting Priority**: Update public link listings to sort by `sortOrder` priority first and `createdAt` (order of addition) second, ensuring newly added links reliably appear at the end.
+
+## [1.0.6] - 2026-08-28
+
+### Added
+- **Analytics Data Pruning & Archival**: Background log retention and baseline archival utility (`pnpm db:prune-analytics`), aggregating historical totals into permanent baseline records while safely purging expired raw page view rows.
+- **Project Architecture Audit & Analysis Toolkit**: Integrated automated codebase analysis tools and comprehensive multi-language architecture reports covering frontend component trees, Prisma database schema, and tRPC API routers.
+
+## [1.0.5] - 2026-08-27
+
+### Added
+- **Transactional Email Service**: Multi-provider email notification infrastructure (SendGrid, Mailgun) supporting friendship link review approval alerts and automated comment reply notifications with user preference controls.
+- **Nested Threaded Comments**: Recursive multi-level comment tree structure, deep linking with deterministic hash anchors (`#comment-xxxxxx`), relative date formatting ("x hours ago", "yesterday"), and honeypot anti-bot defense with admin moderation toggle.
+- **Friendship Link Application & Management**: Raw text paste auto-parser for quick link application, input length validation, admin review & approval workflow, and one-click copy buttons for YAML/JSON site configuration snippets.
+- **Configurable Avatar Service**: Template-based avatar URL generation supporting Cravatar, WeAvatar, Gravatar, and DiceBear with custom placeholder interpolation (`{hash}`, `{size}`, `{fallback}`).
+- **Blog Post View Tracking**: Real-time page view tracking with client-side batching (`PageViewTracker`), database counter (`Post.views`), and composite indexing.
+
+### Changed
+- **Admin Panel Localization**: Comprehensive internationalization (`next-intl`) across all admin dashboard modules (`/[locale]/admin/*`) with modular tRPC sub-routers.
+- **Links Page SSR Migration**: Migrated public links page to React Server Components (RSC) with extracted interactive client components for instant first-contentful paint.
+
 ## [1.0.4] - 2026-08-17
 
 ### Added

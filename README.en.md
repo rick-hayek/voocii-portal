@@ -1,4 +1,4 @@
-# Voocii Portal ![Version](https://img.shields.io/badge/version-v1.0.7-blue.svg)
+# Voocii Portal ![Version](https://img.shields.io/badge/version-v1.0.8-blue.svg)
 
 A modern, full-stack personal portal, knowledge base, and portfolio platform built with Next.js 16, tRPC v11, Prisma, and Tailwind CSS v4.
 

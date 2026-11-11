@@ -8,7 +8,7 @@ export const linkRouter = router({
     const fetchList = async () => {
       return ctx.prisma.link.findMany({
         where: { isAlive: true, status: 'approved', NOT: { id: 'site-self-link' } },
-        orderBy: [{ category: 'asc' }, { sortOrder: 'asc' }],
+        orderBy: [{ category: 'asc' }, { sortOrder: 'asc' }, { createdAt: 'asc' }],
       });
     };
 

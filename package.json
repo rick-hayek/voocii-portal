@@ -1,6 +1,6 @@
 {
   "name": "voocii-portal",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "description": "Modular personal website platform",
   "packageManager": "pnpm@9.15.4",
